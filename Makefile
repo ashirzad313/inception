@@ -1,30 +1,23 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: sahafid <sahafid@student.42.fr>            +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/01/01 14:18:11 by sahafid           #+#    #+#              #
-#    Updated: 2023/01/07 01:59:32 by sahafid          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+DOCKER_COMPOSE=docker compose
 
+DOCKER_COMPOSE_FILE = ./srcs/docker-compose.yml
 
+.PHONY: kill build down clean restart
 
-all : up
+build:
+	mkdir -p /home/aouhadou/data/mysql
+	mkdir -p /home/aouhadou/data/wordpress
+	@$(DOCKER_COMPOSE)  -f $(DOCKER_COMPOSE_FILE) up --build -d
+kill:
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) kill
+down:
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down
+clean:
+	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down -v
 
-up : 
-	@docker-compose -f ./srcs/docker-compose.yml up -d
+fclean: clean
+	rm -r /home/aouhadou/data/mysql
+	rm -r /home/aouhadou/data/wordpress
+	docker system prune -a -f
 
-down : 
-	@docker-compose -f ./srcs/docker-compose.yml down
-
-stop : 
-	@docker-compose -f ./srcs/docker-compose.yml stop
-
-start : 
-	@docker-compose -f ./srcs/docker-compose.yml start
-
-status : 
-	@docker ps
+restart: clean build

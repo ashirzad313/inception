@@ -1,57 +1,45 @@
-#!/bin/bash
+#!bin/bash
 
+# wait for mysql to start
+sleep 10
+# Install Wordpress
 
+if [ ! -f /var/www/html/wp-config.php ]; then
+    wp config create --dbname=$database_name --dbuser=$mysql_user \
+        --dbpass=$mysql_password --dbhost=$mysql_host --allow-root  --skip-check
 
-# create directory to use in nginx container later and also to setup the wordpress conf
-mkdir /var/www/
-mkdir /var/www/html
+    wp core install --url=$domain_name --title=$brand --admin_user=$wordpress_admin \
+        --admin_password=$wordpress_admin_password --admin_email=$wordpress_admin_email \
+        --allow-root
 
-cd /var/www/html
+    wp user create $login $wp_user_email --role=author --user_pass=$wp_user_pwd --allow-root
 
+ #   wp config  set WP_DEBUG true  --allow-root
 
-rm -rf *
+    wp config set FORCE_SSL_ADMIN 'false' --allow-root
 
-curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar 
+    wp config  set WP_REDIS_HOST $redis_host --allow-root
 
-chmod +x wp-cli.phar 
+    wp config set WP_REDIS_PORT $redis_port --allow-root
 
-mv wp-cli.phar /usr/local/bin/wp
+    wp config  set WP_CACHE 'true' --allow-root
 
+    wp plugin install redis-cache --allow-root
 
-wp core download --allow-root
+    wp plugin activate redis-cache --allow-root
 
-mv /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+    wp redis enable --allow-root
 
-mv /wp-config.php /var/www/html/wp-config.php
+    chmod 777 /var/www/html/wp-content
 
+    # install theme
 
-sed -i -r "s/db1/$db_name/1"   wp-config.php
-sed -i -r "s/user/$db_user/1"  wp-config.php
-sed -i -r "s/pwd/$db_pwd/1"    wp-config.php
+    wp theme install twentyfifteen
 
-wp core install --url=$DOMAIN_NAME/ --title=$WP_TITLE --admin_user=$WP_ADMIN_USR --admin_password=$WP_ADMIN_PWD --admin_email=$WP_ADMIN_EMAIL --skip-email --allow-root
+    wp theme activate twentyfifteen
 
+    wp theme update twentyfifteen
+fi
 
-
-
-wp user create $WP_USR $WP_EMAIL --role=author --user_pass=$WP_PWD --allow-root
-
-
-wp theme install astra --activate --allow-root
-
-
-wp plugin install redis-cache --activate --allow-root
-
-wp plugin update --all --allow-root
-
-
- 
-sed -i 's/listen = \/run\/php\/php7.3-fpm.sock/listen = 9000/g' /etc/php/7.3/fpm/pool.d/www.conf
-
-mkdir /run/php
-
-
-
-wp redis enable --allow-root
 
 /usr/sbin/php-fpm7.3 -F
