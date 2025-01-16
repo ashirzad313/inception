@@ -1,23 +1,49 @@
-DOCKER_COMPOSE=docker compose
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: htaheri <htaheri@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/05/26 15:10:50 by htaheri           #+#    #+#              #
+#    Updated: 2024/06/16 15:17:14 by htaheri          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-DOCKER_COMPOSE_FILE = ./srcs/docker-compose.yml
+DOCKER_COMPOSE = docker-compose -f srcs/docker-compose.yml
+VOLUME_DIR = /home/htaheri/data
 
-.PHONY: kill build down clean restart
+all: up
 
-build:
-	mkdir -p /home/aouhadou/data/mysql
-	mkdir -p /home/aouhadou/data/wordpress
-	@$(DOCKER_COMPOSE)  -f $(DOCKER_COMPOSE_FILE) up --build -d
-kill:
-	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) kill
+# Target to create necessary directories
+create_dirs:
+	mkdir -p ${VOLUME_DIR}/mariadb
+	mkdir -p ${VOLUME_DIR}/wordpress
+
+build: create_dirs
+	${DOCKER_COMPOSE} build
+
+up: build
+	${DOCKER_COMPOSE} up
+
 down:
-	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down
-clean:
-	@$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) down -v
+	${DOCKER_COMPOSE} down
 
-fclean: clean
-	rm -r /home/aouhadou/data/mysql
-	rm -r /home/aouhadou/data/wordpress
+stop:
+	${DOCKER_COMPOSE} stop
+
+start:
+	${DOCKER_COMPOSE} start
+
+clean:
+	docker rm -f mariadb wordpress nginx
+	docker rmi -f mariadb wordpress nginx
+	docker volume rm $(shell docker volume ls -q)
 	docker system prune -a -f
 
-restart: clean build
+re: clean all
+
+restart:
+	${DOCKER_COMPOSE} restart
+
+.PHONY: all build up down stop start clean re restart create-dirs

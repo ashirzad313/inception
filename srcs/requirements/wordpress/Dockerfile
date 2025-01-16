@@ -1,31 +1,31 @@
+# Base image
 FROM debian:buster
 
-RUN apt-get update && apt-get upgrade && apt-get install -y \
-    php-fpm \
+# Update and install necessary packages
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+    php \
+    php7.3-fpm \
     php-mysql \
-    php-zip \
-    php-redis \
-    curl \
-    vim && \
-    sed -i -e 's/listen =.*/listen = 9000/g' /etc/php/7.3/fpm/pool.d/www.conf
-    #sed -i -e 's/;listen.owner = www-data/listen.owner = www-data/g' /etc/php/7.3/fpm/pool.d/www.conf && \
-    #sed -i -e 's/;listen.group = www-data/listen.group = www-data/g' /etc/php/7.3/fpm/pool.d/www.conf && \
-    #sed -i -e 's/;listen.mode = 0660/listen.mode = 0660/g' /etc/php/7.3/fpm/pool.d/www.conf && \
-    #sed -i -e 's/;clear_env = no/clear_env = no/g' /etc/php/7.3/fpm/pool.d/www.conf && \
-    #sed -i -e 's/;catch_workers_output = yes/catch_workers_output = yes/g' /etc/php/7.3/fpm/pool.d/www.conf && \
-RUN apt-get install -y sendmail
-RUN mkdir -p /run/php
+    curl
 
-WORKDIR /var/www/html
-RUN chown -R www-data:www-data /var/www/html
+# Create necessary directories and set permissions
+RUN mkdir -p /var/www/html /run/php && \
+    chown -R www-data:www-data /var/www/html /run/php && \
+    chmod -R 755 /var/www/html
+
+# Copy setup script and make it executable
+COPY tools/setup.sh /usr/local/bin/setup.sh
+RUN chmod +x /usr/local/bin/setup.sh
+
+# Install WP-CLI
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     chmod +x wp-cli.phar && \
     mv wp-cli.phar /usr/local/bin/wp
 
-RUN wp core download --allow-root
+# Set working directory
+WORKDIR /var/www/html
 
-COPY ./tools/script.sh .
-
-RUN chmod +x script.sh
-
-ENTRYPOINT ["bash", "script.sh"]
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/setup.sh"]

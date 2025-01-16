@@ -1,133 +1,67 @@
-version: "3.7"
+version: '3.7'
+
+volumes:
+  wordpress_v:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/htaheri/data/wordpress
+      o: bind
+  mariadb_v:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/htaheri/data/mariadb
+      o: bind
+
 services:
   mariadb:
-    build: ./requirements/mariadb
-    image: mariadb
     container_name: mariadb
-    volumes:
-      - mdb:/var/lib/mysql
-    expose:
-        - "3306"
-    env_file:
-      - /home/aouhadou/Desktop/.env
-    networks:
-      - inception_net
-    restart: on-failure
-  wordpress:
-    build: ./requirements/wordpress
-    image: wordpress
-    container_name: wordpress
-    volumes:
-      - wp:/var/www/html
-    depends_on:
-      - mariadb
-    env_file:
-      - /home/aouhadou/Desktop/.env
-    networks:
-      - inception_net
-    expose:
-      - "9000"
-    restart: on-failure
-  
-  nginx:
-    build: ./requirements/nginx
-    image: nginx
-    container_name: nginx
-    volumes:
-      - wp:/var/www/html
-    ports:
-      - 443:443
-    networks:
-      - inception_net
-    depends_on:
-      - wordpress
-    restart: on-failure
-  redis:
-    build: ./requirements/bonus/redis
-    image: redis
-    container_name: redis
-    ports:
-      - 6379:6379
-    networks:
-      - inception_net
-    restart: on-failure
-  adminer:
-    build: ./requirements/bonus/adminer
-    image: adminer
-    container_name: adminer
-    networks:
-      - inception_net
-    depends_on:
-      - mariadb
-    ports:
-      - "8080:8080"
-    restart: on-failure
-  ftp:
-    build: ./requirements/bonus/FTP
-    image: ftp
-    container_name: ftp
-    ports:
-      - "40000-40005:40000-40005"
-      - "21:21"
-      - "20:20"
-    networks:
-      - inception_net
-    volumes:
-      - wp:/home/aouhadou/ftp
-    depends_on:
-      - wordpress
-    env_file:
-      - /home/aouhadou/Desktop/.env
-    restart: on-failure
-  static_site:
-    build: ./requirements/bonus/static_site
-    image: static_site
-    container_name: static_site
-    networks:
-      - inception_net
-    ports:
-      - "81:81"
-    restart: on-failure
-
-  node-js:
-    build: ./requirements/bonus/node
-    image: node-js
-    container_name: node-js
-    networks:
-      - inception_net
-    ports:
-      - "1337:1337"
-    depends_on:
-      - mariadb
-      - wordpress
-    env_file:
-      - /home/aouhadou/Desktop/.env
-    restart: on-failure
-  cadvisor:
-    container_name: cadvisor
-    build: ./requirements/bonus/cadvisor
-    image: cadvisor
-    ports:
-       - "8000:8080"
-    networks:
-     - inception_net
-    volumes:
-      - /:/rootfs
-      - /var/run:/var/run
-      - /sys:/sys
-      - /var/lib/docker/:/var/lib/docker
+    image: mariadb
+    build: ./requirements/mariadb/
     restart: always
-volumes:
-  mdb:
-   driver_opts:
-      type: 'none'
-      o: bind
-      device: /home/aouhadou/data/mysql
-  wp:
-   driver_opts:
-      type: 'none'
-      o: bind
-      device: /home/aouhadou/data/wordpress
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_v:/var/lib/mysql
+    networks:
+      - inception
+
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    build: ./requirements/wordpress/
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"
+    volumes:
+      - wordpress_v:/var/www/html
+    networks:
+      - inception
+    depends_on:
+      - mariadb
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    build: ./requirements/nginx/
+    ports:
+      - "443:443"
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - wordpress_v:/var/www/html
+    depends_on:
+      - wordpress
+    networks:
+      - inception
+
 networks:
-    inception_net:
-        driver: bridge
+  inception:
+    name: inception
+    driver: bridge
