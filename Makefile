@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: htaheri <htaheri@student.42.fr>            +#+  +:+       +#+         #
+#    By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/26 15:10:50 by htaheri           #+#    #+#              #
-#    Updated: 2024/06/16 15:17:14 by htaheri          ###   ########.fr        #
+#    Updated: 2025/01/16 20:37:32 by ashirzad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 DOCKER_COMPOSE = docker-compose -f srcs/docker-compose.yml
-VOLUME_DIR = /home/htaheri/data
+VOLUME_DIR = /home/ashirzad/inception
 
 all: up
 

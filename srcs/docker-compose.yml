@@ -5,20 +5,20 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/htaheri/data/wordpress
+      device: /home/ashirzad/inception/wordpress
       o: bind
   mariadb_v:
     driver: local
     driver_opts:
       type: none
-      device: /home/htaheri/data/mariadb
+      device: /home/ashirzad/inception/mariadb
       o: bind
 
 services:
   mariadb:
     container_name: mariadb
     image: mariadb
-    build: ./requirements/mariadb/
+    build: ./requirements/mariadb
     restart: always
     env_file:
       - .env
