@@ -5,13 +5,13 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/ashirzad/inception/wordpress
+      device: /home/ashirzad/data/wordpress
       o: bind
   mariadb_v:
     driver: local
     driver_opts:
       type: none
-      device: /home/ashirzad/inception/mariadb
+      device: /home/ashirzad/data/mariadb
       o: bind
 
 services:
