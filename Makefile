@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: ashirzad <ashirzad@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/05/26 15:10:50 by htaheri           #+#    #+#              #
-#    Updated: 2025/01/18 15:07:10 by ashirzad         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 DOCKER_COMPOSE = docker-compose -f srcs/docker-compose.yml
 VOLUME_DIR = /home/ashirzad/inception
 
