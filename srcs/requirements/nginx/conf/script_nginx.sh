@@ -6,6 +6,7 @@ CERT_CRT="$CERT_DIR/nginx.crt"
 
 mkdir -p "$CERT_DIR"
 
+# Check for existence of both key and certificate files
 if [ ! -f "$CERT_KEY" ] || [ ! -f "$CERT_CRT" ]; then
     echo "Generating self-signed SSL certificate..."
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \

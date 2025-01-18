@@ -31,12 +31,12 @@ RUN sed -i "s|;listen.owner = www-data|listen.owner = www-data|g" /etc/php/7.4/f
 # Ensure /run/php exists
 RUN mkdir -p /run/php && chown -R www-data:www-data /run/php
 
-COPY ./conf/init_wp.sh /usr/local/bin/init_wp.sh
+COPY ./conf/script_wordpress.sh /script_wordpress.sh
 
-RUN chmod +x /usr/local/bin/init_wp.sh
+RUN chmod +x /script_wordpress.sh
 
 EXPOSE 9000
 
 WORKDIR /var/www/html
 
-CMD ["/bin/bash", "-c", "/usr/local/bin/init_wp.sh && php-fpm7.4 --nodaemonize"]
+CMD ["/bin/bash", "-c", "/script_wordpress.sh && php-fpm7.4 --nodaemonize"]

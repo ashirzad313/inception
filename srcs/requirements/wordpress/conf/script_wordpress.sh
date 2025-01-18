@@ -7,13 +7,13 @@ done
 
 echo "MariaDB is ready. Proceeding with WordPress setup..."
 
+# Validate admin username
 if echo "${WORDPRESS_ADMIN_USER}" | grep -i -qE "admin|administrator"; then
     echo "Error: WORDPRESS_ADMIN_USER contains forbidden substrings (admin, administrator)."
     exit 1
 fi
 
-
-
+# Create wp-config.php if it doesn't exist
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Creating wp-config.php..."
     wp config create --path=/var/www/html \
@@ -26,7 +26,7 @@ else
     echo "wp-config.php already exists. Skipping creation."
 fi
 
-
+# Install WordPress if not already installed
 if ! wp core is-installed --path=/var/www/html --allow-root; then
     echo "Installing WordPress..."
     wp core install --path=/var/www/html \
