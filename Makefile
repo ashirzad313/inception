@@ -1,37 +1,36 @@
-DOCKER_COMPOSE = docker-compose -f srcs/docker-compose.yml
-VOLUME_DIR = /home/ashirzad/inception
+WP_DATA=/home/mfaoussi/data/wordpress 
+DB_DATA=/home/mfaoussi/data/mariadb
 
 all: up
 
-# Target to create necessary directories
-create_dirs:
-	mkdir -p ${VOLUME_DIR}/mariadb
-	mkdir -p ${VOLUME_DIR}/wordpress
-
-build: create_dirs
-	${DOCKER_COMPOSE} build
-
 up: build
-	${DOCKER_COMPOSE} up
-
+	@mkdir -p $(WP_DATA)
+	@mkdir -p $(DB_DATA)
+	docker compose -f ./srcs/docker-compose.yml up -d
 down:
-	${DOCKER_COMPOSE} down
-
+	docker compose -f ./srcs/docker-compose.yml down
 stop:
-	${DOCKER_COMPOSE} stop
-
+	docker compose -f ./srcs/docker-compose.yml stop
 start:
-	${DOCKER_COMPOSE} start
+	docker compose -f ./srcs/docker-compose.yml start
+build:
+	docker compose -f ./srcs/docker-compose.yml build
 
+# clean the containers
+# stop all running containers and remove them.
+# remove all images, volumes and networks.
+# remove the wordpress and mariadb data directories.
+# the (|| true) is used to ignore the error if there are no containers running to prevent the make command from stopping.
 clean:
-	docker rm -f mariadb wordpress nginx
-	docker rmi -f mariadb wordpress nginx
-	docker volume rm $(shell docker volume ls -q)
-	docker system prune -a -f
+	@docker stop $$(docker ps -qa) || true
+	@docker rm $$(docker ps -qa) || true
+	@docker rmi -f $$(docker images -qa) || true
+	@docker volume rm $$(docker volume ls -q) || true
+	@docker network rm $$(docker network ls -q) || true
+	@rm -rf $(WP_DATA) || true
+	@rm -rf $(DB_DATA) || true
 
-re: clean all
+re: clean up
 
-restart:
-	${DOCKER_COMPOSE} restart
-
-.PHONY: all build up down stop start clean re restart create-dirs
+prune: clean
+	@docker system prune -a --volumes -f

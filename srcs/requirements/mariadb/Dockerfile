@@ -1,13 +1,11 @@
-FROM debian:buster
+FROM debian:bullseye
 
-# install maridb server
-RUN apt update && apt install -y mariadb-server openssl
+RUN apt-get update && apt-get install -y mariadb-server && apt-get clean
 
-# copy the mariadb configuration file
-COPY ./tools/script.sh /mariadb/script.sh
+COPY ./conf/init_db.sh /usr/local/bin/init_db.sh
 
-# WORKDIR /
-RUN chmod +x /mariadb/script.sh
+RUN chmod +x /usr/local/bin/init_db.sh
 
-# Run the script
-ENTRYPOINT ["sh", "/mariadb/script.sh"]
+EXPOSE 3306
+
+CMD ["sh", "/usr/local/bin/init_db.sh"]
