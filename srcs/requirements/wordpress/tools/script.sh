@@ -21,8 +21,8 @@ wp core install --url=$DOMAIN_NAME --title=$WP_TITLE --admin_user=$WP_ADMIN_USER
 wp user create $WP_USER $WP_USER_EMAIL --user_pass=$WP_USER_PASSWORD --role=author --allow-root
 
 
-wp option update home "https://htaheri.42.fr" --allow-root
-wp option update siteurl "https://htaheri.42.fr" --allow-root
+wp option update home "https://ashirzad.42.fr" --allow-root
+wp option update siteurl "https://ashirzad.42.fr" --allow-root
 
 chmod -R 755 wp-content/uploads
 chown -R www-data:www-data wp-content/uploads
