@@ -10,7 +10,7 @@ services:
       - wordpress_db:/var/lib/mysql
     networks:
       - inception
-    restart: always 
+    restart: always
 
   nginx:
     container_name: nginx
@@ -20,7 +20,7 @@ services:
     ports:
       - "443:443"
     extra_hosts:
-      - "mfaoussi.42.fr:127.0.0.1"
+      - "ashirzad.42.fr:127.0.0.1"
     volumes:
       - wordpress_files:/var/www/html
     networks:
@@ -49,11 +49,11 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/mfaoussi/data/mariadb
+      device: /home/ashirzad/data/mariadb
       o: bind
   wordpress_files:
     driver: local
     driver_opts:
       type: none
-      device: /home/mfaoussi/data/wordpress
+      device: /home/ashirzad/data/wordpress
       o: bind

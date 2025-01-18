@@ -1,5 +1,5 @@
-WP_DATA=/home/mfaoussi/data/wordpress 
-DB_DATA=/home/mfaoussi/data/mariadb
+WP_DATA=/home/ashirzad/data/wordpress
+DB_DATA=/home/ashirzad/data/mariadb
 
 all: up
 

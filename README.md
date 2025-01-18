@@ -39,14 +39,14 @@ This project involves creating a small Docker-based infrastructure consisting of
      WORDPRESS_DB_PASSWORD=wordpress_pass
      WORDPRESS_DB_HOST=mariadb
 
-     DOMAIN_NAME=mfaoussi.42.fr
+     DOMAIN_NAME=ashirzad.42.fr
      WORDPRESS_TITLE=MyAwesomeSite
      WORDPRESS_ADMIN_USER=myrootad142
      WORDPRESS_ADMIN_PASSWORD=secure_password123
-     WORDPRESS_ADMIN_EMAIL=admin@mfaoussi.42.fr
+     WORDPRESS_ADMIN_EMAIL=admin@ashirzad.42.fr
      WORDPRESS_USER=regular_user
      WORDPRESS_USER_PASSWORD=user_password123
-     WORDPRESS_USER_EMAIL=user@mfaoussi.42.fr
+     WORDPRESS_USER_EMAIL=user@ashirzad.42.fr
 
      MYSQL_DB_HOST=mariadb
      MYSQL_ROOT_PASSWORD=root_password
@@ -66,7 +66,7 @@ This project involves creating a small Docker-based infrastructure consisting of
 
 4. **Verify the Setup**:
    - we need to alter the /etc/hosts file to include our custom domain name to map to the 127.0.0.1
-   - Access WordPress at `mfaoussi.42.fr`.
+   - Access WordPress at `ashirzad.42.fr`.
    - Log in with the admin credentials specified in `.env`.
 
 ---
@@ -90,8 +90,8 @@ This project involves creating a small Docker-based infrastructure consisting of
 - Initialized using `init_db.sh`, which creates the database and users specified in the `.env` file.
 
 ### Volumes
-- **MariaDB**: `/home/mfaoussi/data/mariadb` for database storage.
-- **WordPress**: `/home/mfaoussi/data/wordpress` for website files.
+- **MariaDB**: `/home/ashirzad/data/mariadb` for database storage.
+- **WordPress**: `/home/ashirzad/data/wordpress` for website files.
 
 ---
 
@@ -104,7 +104,7 @@ This project involves creating a small Docker-based infrastructure consisting of
    ```
 
 ### Access WordPress
-- Navigate to `https://mfaoussi.42.fr`.
+- Navigate to `https://ashirzad.42.fr`.
 - Log in using the credentials specified in `.env`.
 
 
