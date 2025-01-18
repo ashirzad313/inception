@@ -24,6 +24,7 @@ clean:
 	@docker network rm $$(docker network ls -q) || true
 	@rm -rf $(WP_DATA) || true
 	@rm -rf $(DB_DATA) || true
+	@./clear.sh
 
 re: clean up
 
