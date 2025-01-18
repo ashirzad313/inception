@@ -18,6 +18,7 @@ services:
   mariadb:
     container_name: mariadb
     image: mariadb
+    command: mysqld --skip-grant-tables
     build: ./requirements/mariadb/
     restart: always
     env_file:
