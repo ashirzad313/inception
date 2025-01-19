@@ -9,7 +9,7 @@ RUN mkdir -p /etc/nginx/ssl
 
 
 COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
-COPY ./conf/script_nginx /script_nginx.sh
+COPY ./conf/script_nginx.sh /script_nginx.sh
 
 RUN chmod +x /script_nginx.sh
 
