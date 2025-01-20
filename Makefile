@@ -1,5 +1,5 @@
-WP_DATA=/home/mfaoussi/data/wordpress 
-DB_DATA=/home/mfaoussi/data/mariadb
+WP_DATA=/home/ashirzad/data/wordpress 
+DB_DATA=/home/ashirzad/data/mariadb
 
 all: up
 
@@ -24,6 +24,7 @@ clean:
 	@docker network rm $$(docker network ls -q) || true
 	@rm -rf $(WP_DATA) || true
 	@rm -rf $(DB_DATA) || true
+	@./clear.sh
 
 re: clean up
 
