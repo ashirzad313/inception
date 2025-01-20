@@ -1,20 +1,25 @@
 #!/bin/bash
 
-echo "Waiting for MariaDB to be ready..."
-until mysqladmin ping -h "${MYSQL_DB_HOST}" -u root --password="${MYSQL_ROOT_PASSWORD}" --silent; do
+# Function to check if MariaDB is ready
+wait_for_mariadb() {
+  echo "Waiting for MariaDB to be ready..."
+  until mysqladmin ping -h "${MYSQL_DB_HOST}" -u root --password="${MYSQL_ROOT_PASSWORD}" --silent; do
     sleep 1
-done
+  done
+  echo "MariaDB is ready."
+}
 
-echo "MariaDB is ready. Proceeding with WordPress setup..."
-
-# Validate admin username
-if echo "${WORDPRESS_ADMIN_USER}" | grep -i -qE "admin|administrator"; then
-    echo "Error: WORDPRESS_ADMIN_USER contains forbidden substrings (admin, administrator)."
+# Function to validate admin username
+validate_admin_username() {
+  if echo "${WORDPRESS_ADMIN_USER}" | grep -i -qE "admin|administrator"; then
+    echo "Error: Invalid administrator username."
     exit 1
-fi
+  fi
+}
 
-# Create wp-config.php if it doesn't exist
-if [ ! -f /var/www/html/wp-config.php ]; then
+# Function to create wp-config.php
+create_wp_config() {
+  if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Creating wp-config.php..."
     wp config create --path=/var/www/html \
         --dbname="${MYSQL_DATABASE}" \
@@ -22,12 +27,14 @@ if [ ! -f /var/www/html/wp-config.php ]; then
         --dbpass="${MYSQL_PASSWORD}" \
         --dbhost="${MYSQL_DB_HOST}" \
         --allow-root
-else
+  else
     echo "wp-config.php already exists. Skipping creation."
-fi
+  fi
+}
 
-# Install WordPress if not already installed
-if ! wp core is-installed --path=/var/www/html --allow-root; then
+# Function to install WordPress
+install_wordpress() {
+  if ! wp core is-installed --path=/var/www/html --allow-root; then
     echo "Installing WordPress..."
     wp core install --path=/var/www/html \
         --url=https://${DOMAIN_NAME} \
@@ -43,6 +50,13 @@ if ! wp core is-installed --path=/var/www/html --allow-root; then
         --path=/var/www/html --allow-root
 
     echo "WordPress installation complete."
-else
+  else
     echo "WordPress is already installed. Skipping setup."
-fi
+  fi
+}
+
+# Main execution block
+wait_for_mariadb
+validate_admin_username
+create_wp_config
+install_wordpress
